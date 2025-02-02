@@ -1,32 +1,35 @@
 package stats_test
 
 import (
-	"testing"
 	"github.com/ProtonEvgeny/kolos/internal/model"
 	"github.com/ProtonEvgeny/kolos/internal/stats"
+	"testing"
 )
 
 func TestStats(t *testing.T) {
 	// AND(x1, x2) -> output
 	andNode := &model.Node{
-        ID: 3, 
-        Type: model.AndGate,
-        Children: []*model.Node{
-            {ID: 1, Type: model.Input}, // x1
-            {ID: 2, Type: model.Input}, // x2
-        },
-    }
-
-    aig := &model.AIG{
-        Inputs: []*model.Node{
-            {ID: 1, Type: model.Input},
-            {ID: 2, Type: model.Input},
-        },
-        AndGates: []*model.Node{andNode},
-        Outputs:  []*model.Node{
-			{ID: 3, Type: model.Output, Children: []*model.Node{andNode}},
+		ID:   3,
+		Type: model.AndGate,
+		Children: []*model.Node{
+			{ID: 1, Type: model.Input}, // x1
+			{ID: 2, Type: model.Input}, // x2
 		},
-    }
+	}
+
+	aig := &model.AIG{
+		Inputs: []*model.Node{
+			{ID: 1, Type: model.Input},
+			{ID: 2, Type: model.Input},
+		},
+		AndGates: []*model.Node{andNode},
+		Outputs: []*model.Node{
+			{
+				Type:     model.Output,
+				Children: []*model.Node{andNode},
+			},
+		},
+	}
 
 	stats := stats.Calculate(aig)
 

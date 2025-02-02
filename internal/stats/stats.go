@@ -5,20 +5,20 @@ import (
 )
 
 type Stats struct {
-	Inputs int
-	Outputs int
-	Latches int
-	AndGates int
-	MaxLevel int
+	Inputs            int
+	Outputs           int
+	Latches           int
+	AndGates          int
+	MaxLevel          int
 	LevelDistribution map[int]int
 }
 
 func Calculate(aig *model.AIG) Stats {
 	stats := Stats{
-		Inputs: len(aig.Inputs),
-		Outputs: len(aig.Outputs),
-		Latches: len(aig.Latches),
-		AndGates: len(aig.AndGates),
+		Inputs:            len(aig.Inputs),
+		Outputs:           len(aig.Outputs),
+		Latches:           len(aig.Latches),
+		AndGates:          len(aig.AndGates),
 		LevelDistribution: make(map[int]int),
 	}
 
