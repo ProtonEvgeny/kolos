@@ -1,4 +1,4 @@
-package test
+package aig_test
 
 import (
 	"os"
@@ -10,7 +10,7 @@ import (
 )
 
 func TestParseAIGFiles(t *testing.T) {
-	files, err := filepath.Glob("epfl_benchmark/*.aig")
+	files, err := filepath.Glob("../../test/epfl_benchmark/*.aig")
 	if err != nil {
 		t.Fatalf("Error while searching for .aig files: %v", err)
 	}
