@@ -78,7 +78,23 @@ func ParseAIG(r io.Reader) (*model.AIG, error) {
 	}
 
 	for i := 0; i < L; i++ {
-		_, _, _ = br.ReadLine() // TODO: realize parsing latches
+		line, _, _ := br.ReadLine()
+		nextStateLit, _ := strconv.Atoi(string(line))
+
+		currentLit := 2 * (I + i + 1)
+		currentVar := currentLit / 2
+
+		latch := &model.Node{
+			ID:       currentVar,
+			Type:     model.Latch,
+			Inverted: (currentLit & 1) == 1,
+			NextState: &model.Node{
+				ID:       nextStateLit / 2,
+				Inverted: (nextStateLit & 1) == 1,
+			},
+		}
+
+		aig.Latches[i] = latch
 	}
 
 	for i := 0; i < O; i++ {
@@ -123,17 +139,34 @@ func ParseAIG(r io.Reader) (*model.AIG, error) {
 func LinkNodes(aig *model.AIG) {
 	nodeMap := make(map[int]*model.Node)
 
-	for _, n := range aig.Inputs {
-		nodeMap[n.ID] = n
+	for _, node := range aig.Inputs {
+		nodeMap[node.ID] = node
 	}
 
-	for _, n := range aig.AndGates {
-		nodeMap[n.ID] = n
+	for _, node := range aig.Latches {
+		nodeMap[node.ID] = node
+	}
+
+	for _, node := range aig.AndGates {
+		nodeMap[node.ID] = node
 	}
 
 	for _, and := range aig.AndGates {
 		for i, child := range and.Children {
 			and.Children[i] = nodeMap[child.ID]
+		}
+	}
+
+	for _, latch := range aig.Latches {
+		if latch.NextState != nil {
+			if resolved, exists := nodeMap[latch.NextState.ID]; exists {
+				latch.NextState = resolved
+			} else {
+				latch.NextState = &model.Node{
+					ID:       latch.NextState.ID,
+					Inverted: latch.NextState.Inverted,
+				}
+			}
 		}
 	}
 }

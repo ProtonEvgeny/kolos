@@ -63,6 +63,16 @@ func validateBasicStructure(t *testing.T, graph *model.AIG) {
 		}
 	}
 
+	// Check Latches are valid
+	for i, latch := range graph.Latches {
+		if latch.Type != model.Latch {
+			t.Errorf("Latch node %d has wrong type: %v", i, latch.Type)
+		}
+		if latch.NextState == nil {
+			t.Errorf("Latch node %d has no next state", i)
+		}
+	}
+
 	// Check Outputs are valid
 	for i, output := range graph.Outputs {
 		if output.Type != model.Output {
@@ -117,6 +127,19 @@ func validateGraphConnections(t *testing.T, graph *model.AIG) {
 			if _, exists := nodeMap[output.ID]; !exists {
 				t.Errorf("Output %d references non-existent node ID %d", i, output.ID)
 			}
+		}
+	}
+
+	// Check the connections of latches
+	for i, latch := range graph.Latches {
+		if latch.NextState == nil {
+			t.Errorf("Latch %d has nil NextState", i)
+			continue
+		}
+
+		// Check that the NextState node exists in the map
+		if _, exists := nodeMap[latch.NextState.ID]; !exists {
+			t.Errorf("Latch %d references non-existent NextState ID %d", i, latch.NextState.ID)
 		}
 	}
 }
