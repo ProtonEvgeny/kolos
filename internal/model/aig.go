@@ -10,16 +10,18 @@ const (
 )
 
 type Node struct {
-	ID int
-	Type NodeType
-	Inverted bool
-	Children []*Node
+	ID           int
+	Type         NodeType
+	Inverted     bool
+	Children     []*Node
+	NextState    *Node
+	InitialState bool // add for simulation support (now useless)
 }
 
 type AIG struct {
-	Inputs []*Node
-	Outputs []*Node
-	Latches []*Node
+	Inputs   []*Node
+	Outputs  []*Node
+	Latches  []*Node
 	AndGates []*Node
-	MaxVar int
+	MaxVar   int
 }
