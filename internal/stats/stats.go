@@ -5,33 +5,33 @@ import (
 )
 
 type Stats struct {
-	Inputs            int
-	Outputs           int
-	Latches           int
-	AndGates          int
-	MaxLevel          int
-	LevelDistribution map[int]int
+	Inputs   int
+	Outputs  int
+	Latches  int
+	AndGates int
+	MaxLevel int
 }
 
+// Calculate computes and returns statistics about the given AIG (And-Inverter Graph).
+// It calculates the number of inputs, outputs, latches, AND gates, and the maximum level
+// of the nodes in the graph. The level of a node is the longest path from any input
+// node to the node itself. The function returns a Stats struct containing these statistics.
 func Calculate(aig *model.AIG) Stats {
 	stats := Stats{
-		Inputs:            len(aig.Inputs),
-		Outputs:           len(aig.Outputs),
-		Latches:           len(aig.Latches),
-		AndGates:          len(aig.AndGates),
-		LevelDistribution: make(map[int]int),
+		Inputs:   len(aig.Inputs),
+		Outputs:  len(aig.Outputs),
+		Latches:  len(aig.Latches),
+		AndGates: len(aig.AndGates),
 	}
 
 	nodeLevels := make(map[*model.Node]int)
 
 	for _, node := range aig.Inputs {
 		nodeLevels[node] = 0
-		stats.LevelDistribution[0]++
 	}
 
 	for _, latch := range aig.Latches {
 		nodeLevels[latch] = 0
-		stats.LevelDistribution[0]++
 	}
 
 	var computeLevel func(*model.Node) int
@@ -60,26 +60,21 @@ func Calculate(aig *model.AIG) Stats {
 		}
 
 		nodeLevels[node] = level
-
-		if node.Type == model.AndGate {
-			stats.LevelDistribution[level]++
-		}
-
 		return level
 	}
 
+	maxLevel := 0
 	for _, and := range aig.AndGates {
-		level := computeLevel(and)
-		if level > stats.MaxLevel {
-			stats.MaxLevel = level
+		if level := computeLevel(and); level > maxLevel {
+			maxLevel = level
 		}
 	}
 	for _, out := range aig.Outputs {
-		level := computeLevel(out)
-		if level > stats.MaxLevel {
-			stats.MaxLevel = level
+		if level := computeLevel(out); level > maxLevel {
+			maxLevel = level
 		}
 	}
 
+	stats.MaxLevel = maxLevel
 	return stats
 }
