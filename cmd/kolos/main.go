@@ -85,11 +85,11 @@ func completer() readline.AutoCompleter {
 
 func printHelp() {
 	fmt.Println("Available commands:")
-	fmt.Println("	read_aiger <file>		Load AIGER file")
-	fmt.Println("	print_stats				Show statistics")
-	fmt.Println("	clear					Clear current network")
-	fmt.Println("	quit					Quit the program")
-	fmt.Println("	help					Show this help")
+	fmt.Println("	read_aiger <file>         Load AIGER file")
+	fmt.Println("	print_stats               Show statistics")
+	fmt.Println("	clear                     Clear current network")
+	fmt.Println("	quit                      Quit the program")
+	fmt.Println("	help                      Show this help")
 }
 
 func handleClear() {
@@ -129,8 +129,8 @@ func handlePrintStats() {
 	)
 
 	fmt.Printf("%s :\n", name)
-	fmt.Printf("		I / O 	= %d / %d\n", s.Inputs, s.Outputs)
-	fmt.Printf("		Latches = %d\n", s.Latches)
-	fmt.Printf("		AND		= %d\n", s.AndGates)
-	fmt.Printf("		Level	= %d\n", s.MaxLevel)
+	fmt.Printf("		I / O      = %d / %d\n", s.Inputs, s.Outputs)
+	fmt.Printf("		Latches    = %d\n", s.Latches)
+	fmt.Printf("		AND        = %d\n", s.AndGates)
+	fmt.Printf("		Level      = %d\n", s.MaxLevel)
 }
